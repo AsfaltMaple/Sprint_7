@@ -1,6 +1,9 @@
 import requests
 import random
 import string
+import pytest
+
+
 
 # метод регистрации нового курьера возвращает список из логина и пароля
 # если регистрация не удалась, возвращает пустой список
@@ -49,6 +52,49 @@ def generate_courier_data(): #без пост-запроса, просто вы�
     first_name = generate_random_string(10)
 
     return login, password, first_name
+
+def delete_courier(courier_id):
+    response = requests.delete(f'{URL_COURIER}/{courier_id}')
+    return response
+
+
+def generate_order_data():
+    def generate_random_string(length):
+        letters = string.ascii_lowercase
+        return ''.join(random.choice(letters) for i in range(length))
+
+    firstName = generate_random_string(7)
+    lastName = generate_random_string(7)
+    address = generate_random_string(10) + " 123"
+    metroStation = 5
+    phone = "12345678901"
+    rentTime = 3
+    deliveryDate = "2027-12-12"
+
+    return firstName, lastName, address, metroStation, phone, rentTime, deliveryDate
+
+def create_order(color_for_order):
+    firstName, lastName, address, metroStation, phone, rentTime, deliveryDate = generate_order_data()
+
+    payload = {
+        "firstName": firstName,
+        "lastName": lastName,
+        "address": address,
+        "metroStation": metroStation,
+        "phone": phone,
+        "rentTime": rentTime,
+        "deliveryDate": deliveryDate,
+        "color": color_for_order
+    }
+
+    response = requests.post(URL_ORDER, json=payload)
+
+    return response
+
+def cancel_order(track):
+    response = requests.put(f'{URL_ORDER}', params={"track": track})
+    return response
+
 
 URL_COURIER = 'https://qa-scooter.education-services.ru/api/v1/courier'
 URL_ORDER = 'https://qa-scooter.education-services.ru/api/v1/orders'
