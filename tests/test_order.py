@@ -1,11 +1,12 @@
 import pytest
 import requests
 import helpers
+import allure
 
 
 
 class TestOrder:
-
+    @allure.title("Успешное создание заказа")
     @pytest.mark.parametrize('color_for_order', [["BLACK"], ["GREY"], ["BLACK", "GREY"], []])
     def test_order_created(color_for_order, cancel_order):
         response = helpers.create_order(color_for_order)
@@ -17,7 +18,7 @@ class TestOrder:
         assert "track" in response.json()
 
 
-
+    @allure.title("Получение списка заказов")
     @pytest.mark.parametrize('color_for_order', [["BLACK"], ["GREY"], ["BLACK", "GREY"], []])
     def test_return_order_list(color_for_order,cancel_order):
         response_create = helpers.create_order(color_for_order)
