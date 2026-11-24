@@ -1,5 +1,8 @@
 import pytest
 import helpers
+from samokat_api import SamokatApi
+
+api = SamokatApi()
 
 @pytest.fixture
 def cancel_order():
@@ -8,11 +11,11 @@ def cancel_order():
     yield tracks
 
     for track in tracks:
-        helpers.cancel_order(track)
+        api.cancel_order(track)
 
 @pytest.fixture
 def cancel_courier():
     courier_ids = []
     yield courier_ids
     for courier_id in courier_ids:
-        helpers.delete_courier(courier_id)
+        api.delete_courier(courier_id)

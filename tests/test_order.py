@@ -1,15 +1,16 @@
 import pytest
-import requests
-import helpers
 import allure
+from samokat_api import SamokatApi
 
+api = SamokatApi()
 
-
+@allure.parent_suite("Заказы")
+@allure.suite("Создание заказа и получение списка заказов")
 class TestOrder:
     @allure.title("Успешное создание заказа")
     @pytest.mark.parametrize('color_for_order', [["BLACK"], ["GREY"], ["BLACK", "GREY"], []])
-    def test_order_created(color_for_order, cancel_order):
-        response = helpers.create_order(color_for_order)
+    def test_order_created(self, color_for_order, cancel_order):
+        response = api.create_order(color_for_order)
         track = response.json()["track"]
 
         cancel_order.append(track)
@@ -20,11 +21,11 @@ class TestOrder:
 
     @allure.title("Получение списка заказов")
     @pytest.mark.parametrize('color_for_order', [["BLACK"], ["GREY"], ["BLACK", "GREY"], []])
-    def test_return_order_list(color_for_order,cancel_order):
-        response_create = helpers.create_order(color_for_order)
+    def test_return_order_list(self, color_for_order,cancel_order):
+        response_create = api.create_order(color_for_order)
         track = response_create.json()["track"]
 
-        response_list = requests.get(helpers.URL_ORDER)
+        response_list = api.get_orders()
 
         cancel_order.append(track)
         
